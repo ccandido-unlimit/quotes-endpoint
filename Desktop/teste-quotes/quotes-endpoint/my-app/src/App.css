@@ -1,0 +1,79 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #141618;
+  margin: 0;
+  padding: 20px;
+}
+
+.form-container {
+  max-width: 500px;
+  margin: auto;
+  background: #24272A;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.result-container {
+  margin-top: 20px;
+  padding: 10px;
+  background: #24272A;
+  border: 2px solid #31373d;
+  border-radius: 4px;
+  text-align: center;
+}
+
+h2, p {
+  text-align: center;
+  color: #f9f9f9;
+}
+
+.quote-form {
+  display: flex; 
+  flex-direction: column;
+}
+
+label {
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.submit-button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #C9F76E;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.submit-button:hover {
+  background-color: #B8E67D;
+  cursor: pointer;}
+
+.loading-text {
+  text-align: center;
+  color: #B8E67D;
+  font-weight: bold;
+}
+
+.error-text {
+  color: red;
+  text-align: center;
+}
