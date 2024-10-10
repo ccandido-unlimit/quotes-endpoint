@@ -1,10 +1,11 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #141618;
-  margin: 0;
+  margin: 5%;
   padding: 20px;
 }
 
+/*
 .form-container {
   max-width: 500px;
   margin: auto;
@@ -21,6 +22,41 @@ body {
   border: 2px solid #31373d;
   border-radius: 4px;
   text-align: center;
+  align-content: right;
+}
+
+.quote-form {
+  display: flex; 
+  flex-direction: column;
+}
+*/ 
+
+.form-container {
+  display: flex;           /* Usar flexbox para organizar os filhos */
+  justify-content: space-between;  /* Espaçamento entre o formulário e resultados */
+  align-items: flex-start; /* Alinhar items no topo */
+  max-width: 1000px;       /* Largura máxima para o contêiner */
+  height: 500px;
+  margin: auto;           /* Centralizar contêiner na tela */
+  background: #24272A;       /* Fundo branco para o contêiner */
+  padding: 20px;          /* Espaçamento interno */
+  border-radius: 8px;     /* Bordas arredondadas */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.quote-form {
+  flex: 1;                  /* O formulário ocupará todo o espaço disponível */
+  margin-right: 10px;       /* Espaço entre o formulário e o container de resultados */
+}
+
+.result-container {
+  margin: 10%;
+  margin-top: 20%;
+  flex-basis: 300px;       /* Largura fixa mínima para o contêiner de resultados */
+  padding: 10px;           /* Espaçamento interno */
+  background: #24272A;     /* Fundo azul claro */
+  border-radius: 4px;      /* Bordas arredondadas */
+  text-align: center;       /* Centralizar texto */
 }
 
 h2, p {
@@ -28,27 +64,41 @@ h2, p {
   color: #f9f9f9;
 }
 
-.quote-form {
-  display: flex; 
-  flex-direction: column;
-}
 
 label {
-  margin: 10px 0 5px;
+  margin: 5px 0 5px;
   font-weight: bold;
   color: #ffffff;
+  width: 10%;
+  height: auto;
 }
 
 input {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #a79c9c;
   border-radius: 4px;
   font-size: 1em;
+  background-color: #24272A;
+  color: white;
+  margin: 8px;
 }
 
 input:focus {
-  border-color: #007bff;
+  border-color: #C9F76E;
   outline: none;
+}
+
+.region-form, 
+.currency-form,
+.crypto-form {
+  padding: 8px;
+  border: 1px solid #a79c9c;
+  border-radius: 4px;
+  font-size: 1em;
+  background-color: #24272A;
+  color: white;
+  width: 40px;
+  margin: 8px;
 }
 
 .submit-button {
@@ -65,7 +115,8 @@ input:focus {
 
 .submit-button:hover {
   background-color: #B8E67D;
-  cursor: pointer;}
+  cursor: pointer;
+}
 
 .loading-text {
   text-align: center;
@@ -77,3 +128,34 @@ input:focus {
   color: red;
   text-align: center;
 }
+
+
+.toggle-button {
+  padding: 10px;
+  background-color: #C9F76E;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.toggle-button:hover {
+  background-color: #B8E67D;
+  cursor: pointer;}
+
+  .action-button {
+    margin-top: 15px;      /* Margem superior para afastar do resultado */
+    padding: 10px 15px;    /* Espaçamento dentro do botão */
+    background-color: #C9F76E; /* Cor de fundo azul */
+    color: black;          /* Cor do texto */
+    border: none;          /* Sem borda */
+    border-radius: 4px;    /* Bordas arredondadas */
+    cursor: pointer;       /* Cursor em forma de mão ao passar o mouse */
+  }
+  
+  .action-button:hover {
+    background-color: #B8E67D; /* Cor de fundo no hover */
+  }

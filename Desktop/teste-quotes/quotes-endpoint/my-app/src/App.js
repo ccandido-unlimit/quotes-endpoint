@@ -7,6 +7,7 @@ const App = () => {
   const [payment, setPayment] = useState("PIX"); // Método de pagamento
   const [crypto, setCrypto] = useState("ETH"); // Criptomoeda
   const [fiat, setFiat] = useState("BRL"); // Moeda Fiat
+  const [wallet, setWallet] = useState("0xc458f721D11322E36f781a9C58055de489178BF2");
   const [region, setRegion] = useState("BR"); // Região
   const [resultOnramp, setResultOnramp] = useState(null); // Resultado da compra
   const [resultOfframp, setResultOfframp] = useState(null); // Resultado da venda
@@ -25,6 +26,7 @@ const App = () => {
           fiat: fiat,
           amount: amount,
           region: region,
+          wallet: wallet,
         },
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +42,7 @@ const App = () => {
     } finally {
       setLoading(false);
     }
-  }, [amount, payment, crypto, fiat, region]);
+  }, [amount, payment, crypto, fiat, region, wallet]);
 
   const fetchOfframpQuote = useCallback(async () => {
     setLoading(true);
@@ -53,6 +55,7 @@ const App = () => {
           crypto: crypto,
           region: region,
           cryptoAmount: amount,
+          wallet: wallet,
         },
         headers: {
           'Accept': 'application/json',
@@ -69,7 +72,7 @@ const App = () => {
     } finally {
       setLoading(false);
     }
-  }, [amount, payment, crypto, fiat, region]);
+  }, [amount, payment, crypto, fiat, region, wallet]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -97,10 +100,23 @@ const App = () => {
   const amountInOfframp = resultOfframp?.amountIn;
   const amountOutOfframp = resultOfframp?.amountOut;
 
+  const handleButtonClickOnramp = () => {
+    const payout = amountOutOnramp || amountOutOfframp; // Use a saída correta de acordo com a operação
+    const fiatCurrency = isSelling ? fiat : fiat; // Aqui, você pode usar o valor que deseja
+    const urlOnramp = `https://onramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}`;
+    window.open(urlOnramp, '_blank');
+  };
+  const handleButtonClickOfframp = () => {
+    const payout = amountOutOnramp || amountOutOfframp; // Use a saída correta de acordo com a operação
+    const fiatCurrency = isSelling ? fiat : fiat; // Aqui, você pode usar o valor que deseja
+    const urlOnramp = `https://offramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}`;
+    window.open(urlOnramp, '_blank');
+  };
+
   return (
     <div className="form-container">
-      <h2>{isSelling ? "Sell Cryptocurrency" : "Buy Cryptocurrency"}</h2>
       <form onSubmit={handleSubmit} className="quote-form">
+        {/* <h2>{isSelling ? "Sell Cryptocurrency" : "Buy Cryptocurrency"}</h2> */}
         <div className="toggle-area">
           <button type="button" onClick={() => setIsSelling(false)} className={`toggle-button ${!isSelling ? 'active' : ''}`}>
             Buy
@@ -109,45 +125,58 @@ const App = () => {
             Sell
           </button>
         </div>
+        <label htmlFor="wallet">
+          Wallet
+          <input type="text" value={wallet} onChange={(e) => setWallet(e.target.value)} />
+        </label>
+        <label>
+          Region:
+          <input className="region-form" type="text" value={region} onChange={(e) => setRegion(e.target.value)} />
+        </label>
+        <label>
+          Currency:
+          <input className="currency-form" type="text" value={fiat} onChange={(e) => setFiat(e.target.value)} />
+        </label>
+        <p></p>
         <label htmlFor="amount">
           Amount ({isSelling ? crypto : fiat}):
           <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </label>
+        <p></p>
+        <label>
+          Crypto:
+          <input className="crypto-form" type="text" value={crypto} onChange={(e) => setCrypto(e.target.value)} />
+        </label>
+        <p></p>
         <label>
           Payment Method:
           <input type="text" value={payment} onChange={(e) => setPayment(e.target.value)} />
         </label>
-        <label>
-          Cryptocurrency:
-          <input type="text" value={crypto} onChange={(e) => setCrypto(e.target.value)} />
-        </label>
-        <label>
-          Fiat Currency:
-          <input type="text" value={fiat} onChange={(e) => setFiat(e.target.value)} />
-        </label>
-        <label>
-          Region:
-          <input type="text" value={region} onChange={(e) => setRegion(e.target.value)} />
-        </label>
-        <button type="submit" className="submit-button">Get Quote</button>
+      
+        <p></p>
+          <button type="submit" className="submit-button">Get Quote</button>
       </form>
-
-      {loading && <p className="loading-text">Loading...</p>}
-      {error && <p className="error-text">{error}</p>}
-      {resultOnramp && !isSelling && (
-        <div className="result-container">
-          <h2>Quote Result (Buying)</h2>
-          <p>{fiat}: {amountInOnramp}</p>
-          <p>{crypto}: {amountOutOnramp}</p>
-        </div>
-      )}
-      {resultOfframp && isSelling && (
-        <div className="result-container">
-          <h2>Quote Result (Selling)</h2>
-          <p>{crypto}: {amountInOfframp}</p>
-          <p>{fiat}: {amountOutOfframp}</p>
-        </div>
-      )}
+  
+      <div>
+        {/* Resultados do Onramp */}
+        {resultOnramp && !isSelling && (
+          <div className="result-container">
+            <h2>Quote Result (Buying)</h2>
+            <p>{fiat}: {amountInOnramp}</p>
+            <p>{crypto}: {amountOutOnramp}</p>
+            <button onClick={handleButtonClickOnramp} className="action-button"> Proceed to Onramp</button>  {/* Botão para Onramp */}
+          </div>
+        )}
+        {/* Resultados do Offramp */}
+        {resultOfframp && isSelling && (
+          <div className="result-container">
+            <h2>Quote Result (Selling)</h2>
+            <p>{crypto}: {amountInOfframp}</p>
+            <p>{fiat}: {amountOutOfframp}</p>
+            <button onClick={handleButtonClickOfframp} className="action-button">Proceed to Offramp</button>  {/* Botão para Offramp */}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
