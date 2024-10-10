@@ -9,11 +9,35 @@ const App = () => {
   const [fiat, setFiat] = useState("BRL"); // Moeda Fiat
   const [wallet, setWallet] = useState("0xc458f721D11322E36f781a9C58055de489178BF2");
   const [region, setRegion] = useState("BR"); // Região
+  const [countries, setCountries] = useState([]); // Estado para armazenar os países
   const [resultOnramp, setResultOnramp] = useState(null); // Resultado da compra
   const [resultOfframp, setResultOfframp] = useState(null); // Resultado da venda
   const [error, setError] = useState(null); // Erro na requisição
   const [loading, setLoading] = useState(false); // Indicador de carregamento
   const [isSelling, setIsSelling] = useState(false); // Controle para saber se estamos na função de venda
+
+  // const fetchCountries = useCallback(async () => {
+  //   try {
+  //     const response = await axios.get(`/onramp/v1/configuration`, {
+  //       headers: {
+  //         'signature': '09d661b0004afe735c70b08a73660ef84565e786c6d09b002ab604712c32060c',
+  //         'Content-Type': 'application/json',
+  //         'api-key': 'fGhKXIdWINsjKFuMZpnKqPrlWOIGocRE',
+  //       },
+  //     });
+  //     setCountries(response.data.countries || []); // Presume que a estrutura da resposta tenha uma lista de países
+  //   } catch (err) {
+  //     console.error("Erro ao buscar países:", err);
+  //     setError("Erro ao buscar países");
+  //   }
+  // }, []);
+
+
+  // useEffect(() => {
+  //   fetchCountries(); // Chama a função para buscar os países no carregamento do componente
+  // }, [fetchCountries]);
+
+
 
   const fetchQuote = useCallback(async () => {
     setLoading(true);
@@ -50,12 +74,12 @@ const App = () => {
       const response = await axios.get(`/offramp/v1/quotes`, {
         params: {
           partnerAccountId: 'baa2d9f8-6ff0-48e9-babf-709c9007ffbe',
-          payment: payment,
-          fiat: fiat,
-          crypto: crypto,
-          region: region,
-          cryptoAmount: amount,
-          wallet: wallet,
+          payment,
+          fiat,
+          crypto,
+          region,
+          cryptoAmount: amount, // Use 'cryptoAmount' aqui
+          wallet,
         },
         headers: {
           'Accept': 'application/json',
@@ -63,7 +87,7 @@ const App = () => {
           'signature': 'f6262b4049b424fee9ae5e1148a224cf300adef8cd11de69789c42fa8762f19c',
         },
       });
-
+  
       setResultOfframp(response.data);
       setError(null);
     } catch (err) {
@@ -106,11 +130,15 @@ const App = () => {
     const urlOnramp = `https://onramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}`;
     window.open(urlOnramp, '_blank');
   };
+
   const handleButtonClickOfframp = () => {
-    const payout = amountOutOnramp || amountOutOfframp; // Use a saída correta de acordo com a operação
-    const fiatCurrency = isSelling ? fiat : fiat; // Aqui, você pode usar o valor que deseja
-    const urlOnramp = `https://offramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}`;
-    window.open(urlOnramp, '_blank');
+    const payout = amountOutOfframp; // Payout relacionado ao resultado da venda
+    const fiatCurrency = fiat; // A moeda fiat a ser usada
+    const cryptoAmount = amount; // Usando o valor da quantidade de criptomoeda que será vendida
+  
+    const urlOfframp = `https://offramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&cryptoAmount=${cryptoAmount}`; // Mudança aqui para cryptoAmount
+  
+    window.open(urlOfframp, '_blank'); // Abre a URL nova em uma aba.
   };
 
   return (
@@ -127,15 +155,21 @@ const App = () => {
         </div>
         <label htmlFor="wallet">
           Wallet
-          <input type="text" value={wallet} onChange={(e) => setWallet(e.target.value)} />
+          <input className="wallet-form" type="text" value={wallet} onChange={(e) => setWallet(e.target.value)} />
         </label>
-        <label>
+        <label htmlFor="region">
           Region:
-          <input className="region-form" type="text" value={region} onChange={(e) => setRegion(e.target.value)} />
+          <select className="region-form" value={region} onChange={(e) => setRegion(e.target.value)}>
+            <option value="BR">BR</option>
+            <option value="MX">MX</option>
+          </select>
         </label>
         <label>
           Currency:
-          <input className="currency-form" type="text" value={fiat} onChange={(e) => setFiat(e.target.value)} />
+          <select className="currency-form" type="text" value={fiat} onChange={(e) => setFiat(e.target.value)}>
+            <option value="BRL">BRL</option>
+            <option value="MXN">MXN</option>
+          </select>
         </label>
         <p></p>
         <label htmlFor="amount">
@@ -150,13 +184,16 @@ const App = () => {
         <p></p>
         <label>
           Payment Method:
-          <input type="text" value={payment} onChange={(e) => setPayment(e.target.value)} />
+          <select className="payment-form" type="text" value={payment} onChange={(e) => setPayment(e.target.value)}>
+            <option value="PIX">PIX</option>
+            <option value="SPEI">SPEI</option>
+          </select>
         </label>
-      
+
         <p></p>
-          <button type="submit" className="submit-button">Get Quote</button>
+        <button type="submit" className="submit-button">Get Quote</button>
       </form>
-  
+
       <div>
         {/* Resultados do Onramp */}
         {resultOnramp && !isSelling && (

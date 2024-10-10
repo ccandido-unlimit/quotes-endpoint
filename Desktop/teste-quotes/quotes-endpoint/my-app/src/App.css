@@ -88,7 +88,8 @@ input:focus {
   outline: none;
 }
 
-.region-form, 
+.payment-form,
+.region-form,
 .currency-form,
 .crypto-form {
   padding: 8px;
@@ -97,8 +98,12 @@ input:focus {
   font-size: 1em;
   background-color: #24272A;
   color: white;
-  width: 40px;
+  width: 80px;
   margin: 8px;
+}
+
+.wallet-form {
+  width: 110px;;
 }
 
 .submit-button {
