@@ -199,19 +199,19 @@ const App = () => {
         {/* Resultados do Onramp */}
         {resultOnramp && !isSelling && (
           <div className="result-container">
-            <h2>Quote Result (Buying)</h2>
+            <h2> Buying Results</h2>
             <p>{fiat}: {amountInOnramp}</p>
             <p>{crypto}: {amountOutOnramp}</p>
-            <button onClick={handleButtonClickOnramp} className="action-button"> Proceed to Onramp</button>  {/* Botão para Onramp */}
+            <button onClick={handleButtonClickOnramp} className="action-button"> Buy Now</button>  {/* Botão para Onramp */}
           </div>
         )}
         {/* Resultados do Offramp */}
         {resultOfframp && isSelling && (
           <div className="result-container">
-            <h2>Quote Result (Selling)</h2>
+            <h2>Selling Results</h2>
             <p>{crypto}: {amountInOfframp}</p>
             <p>{fiat}: {amountOutOfframp}</p>
-            <button onClick={handleButtonClickOfframp} className="action-button">Proceed to Offramp</button>  {/* Botão para Offramp */}
+            <button onClick={handleButtonClickOfframp} className="action-button">Sell Now</button>  {/* Botão para Offramp */}
           </div>
         )}
       </div>
