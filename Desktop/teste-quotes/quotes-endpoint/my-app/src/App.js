@@ -45,12 +45,13 @@ const App = () => {
       const response = await axios.get(`/onramp/v1/quotes`, {
         params: {
           partnerAccountId: 'baa2d9f8-6ff0-48e9-babf-709c9007ffbe',
-          payment: payment,
-          crypto: crypto,
-          fiat: fiat,
-          amount: amount,
-          region: region,
-          wallet: wallet,
+          payment,
+          crypto,
+          fiat,
+          amount,
+          region,
+          wallet,
+          redirectUrl: "www.unlimit.com" // Adiciona o redirectUrl aqui
         },
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +68,6 @@ const App = () => {
       setLoading(false);
     }
   }, [amount, payment, crypto, fiat, region, wallet]);
-
   const fetchOfframpQuote = useCallback(async () => {
     setLoading(true);
     try {
@@ -127,7 +127,8 @@ const App = () => {
   const handleButtonClickOnramp = () => {
     const payout = amountOutOnramp || amountOutOfframp; // Use a saída correta de acordo com a operação
     const fiatCurrency = isSelling ? fiat : fiat; // Aqui, você pode usar o valor que deseja
-    const urlOnramp = `https://onramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}`;
+
+    const urlOnramp = `https://onramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payment=${payment}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&fiatAmount=${amount}&redirectUrl=https://www.unlimit.com`;
     window.open(urlOnramp, '_blank');
   };
 
@@ -136,7 +137,7 @@ const App = () => {
     const fiatCurrency = fiat; // A moeda fiat a ser usada
     const cryptoAmount = amount; // Usando o valor da quantidade de criptomoeda que será vendida
   
-    const urlOfframp = `https://offramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&cryptoAmount=${cryptoAmount}`; // Mudança aqui para cryptoAmount
+    const urlOfframp = `https://offramp-sandbox.gatefi.com/?merchantId=baa2d9f8-6ff0-48e9-babf-709c9007ffbe&cryptoCurrency=${crypto}&payment=${payment}&payout=${payout}&fiatCurrency=${fiatCurrency}&region=${region}&wallet=${wallet}&walletLock=true&fiatCurrencyLock=true&cryptoCurrencyLock=true&cryptoAmount=${cryptoAmount}&redirectUrl=https://www.unlimit.com`; // Mudança aqui para cryptoAmount
   
     window.open(urlOfframp, '_blank'); // Abre a URL nova em uma aba.
   };
